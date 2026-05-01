@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../config/firebase';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { auth, db } from '../../config/firebase';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -16,7 +17,26 @@ export default function LoginScreen() {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
       } else {
-        await createUserWithEmailAndPassword(auth, email, password);
+        const credential = await createUserWithEmailAndPassword(auth, email, password);
+        // Create the Firestore user document so the backend can find the user.
+        // If this fails, delete the auth account to keep both stores consistent.
+        try {
+          await setDoc(doc(db, 'users', credential.user.uid), {
+            email: credential.user.email,
+            voterState: 'NOT_REGISTERED',
+            experienceLevel: 'beginner',
+            completedSteps: [],
+            location: {},
+            deadlines: {},
+            notificationPrefs: { push: true, email: false, sms: false },
+            createdAt: serverTimestamp(),
+            lastActive: serverTimestamp(),
+          });
+        } catch (firestoreError) {
+          // Roll back the auth account so the user can retry cleanly
+          await credential.user.delete();
+          throw firestoreError;
+        }
       }
     } catch (e: any) {
       setError(e.message);
