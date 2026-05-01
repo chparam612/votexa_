@@ -12,24 +12,19 @@ const firebaseConfig = {
   appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
 };
 
-// 1. Initialize Firebase App
+// 1. Initialize Firebase App (idempotent across hot reloads)
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
-// 2. Initialize Auth with Persistence (Strict Pattern)
-// We check if auth is already registered to avoid the 'Component already registered' error
+// 2. Initialize Auth with AsyncStorage persistence.
+// Try to initialize first; if already initialized (e.g. hot reload), fall back to getAuth.
 let auth;
-if (getApps().length > 0) {
-  try {
-    auth = getAuth(app);
-  } catch (e) {
-    auth = initializeAuth(app, {
-      persistence: getReactNativePersistence(ReactNativeAsyncStorage)
-    });
-  }
-} else {
+try {
   auth = initializeAuth(app, {
     persistence: getReactNativePersistence(ReactNativeAsyncStorage)
   });
+} catch (e) {
+  // Auth already initialized — reuse the existing instance
+  auth = getAuth(app);
 }
 
 const db = getFirestore(app);
