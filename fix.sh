@@ -10,9 +10,11 @@ echo "=========================================="
 echo "VOTEXA CLEAN & START (LAN MODE)"
 echo "=========================================="
 
-echo "[1/8] Killing all Node processes..."
-pkill -f "node" 2>/dev/null || true
-pkill -f "ts-node" 2>/dev/null || true
+echo "[1/8] Killing Votexa dev processes..."
+pkill -f "npm run dev:backend" 2>/dev/null || true
+pkill -f "npm run dev:frontend" 2>/dev/null || true
+pkill -f "ts-node-dev.*src/index" 2>/dev/null || true
+pkill -f "expo start" 2>/dev/null || true
 
 echo "[2/8] Deleting node_modules and locks..."
 rm -rf node_modules

@@ -214,7 +214,7 @@ npm run build:android -w apps/frontend
 ### View Logs & Results
 | What | Where |
 |------|-------|
-| Backend logs (live) | `gcloud beta run services logs tail votexa-backend --region=asia-south1` |
+| Backend logs (live) | `gcloud beta run services logs tail votexa-backend --region=<YOUR_REGION>` (default: `asia-south1`) |
 | Backend logs (Cloud Console) | Cloud Run → votexa-backend → **LOGS** tab |
 | Analytics events | BigQuery → `votexa_analytics.events` |
 | Custom metrics | Cloud Monitoring → Metrics Explorer → `custom.googleapis.com/votexa/*` |

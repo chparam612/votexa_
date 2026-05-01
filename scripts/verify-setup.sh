@@ -36,7 +36,7 @@ if [ -f "$ROOT_DIR/.env" ]; then
 
   for key in "${REQUIRED_KEYS[@]}"; do
     value=$(grep -E "^${key}=" "$ROOT_DIR/.env" | cut -d '=' -f2-)
-    if [ -z "$value" ] || [[ "$value" == *"your_"* ]]; then
+    if [ -z "$value" ] || [[ "$value" == *"your_"* ]] || [[ "$value" == *"xxxxx"* ]]; then
       echo -e "  $FAIL $key is missing or still a placeholder"
       errors=$((errors + 1))
     else
@@ -56,9 +56,9 @@ echo "[2/6] Checking service-account.json..."
 if [ -f "$ROOT_DIR/service-account.json" ]; then
   # Validate it's valid JSON with expected fields
   if command -v node &>/dev/null; then
-    valid=$(node -e "
+    valid=$(SA_PATH="$ROOT_DIR/service-account.json" node -e "
       try {
-        const sa = require('$ROOT_DIR/service-account.json');
+        const sa = require(process.env.SA_PATH);
         const ok = sa.type === 'service_account' && !!sa.project_id && !!sa.private_key;
         process.stdout.write(ok ? 'yes' : 'no');
       } catch(e) { process.stdout.write('no'); }
@@ -134,10 +134,10 @@ else
   echo -e "  $WARN Frontend node_modules missing — run: npm install inside apps/frontend"
 fi
 
-if [ -d "$ROOT_DIR/apps/backend/node_modules" ] || [ -d "$ROOT_DIR/node_modules/express" ]; then
-  echo -e "  $PASS Backend dependencies accessible"
+if [ -d "$ROOT_DIR/apps/backend/node_modules" ]; then
+  echo -e "  $PASS Backend node_modules present"
 else
-  echo -e "  $WARN Backend dependencies may be missing"
+  echo -e "  $WARN Backend node_modules missing — run: npm install inside apps/backend"
 fi
 
 echo ""
