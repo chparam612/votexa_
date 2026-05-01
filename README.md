@@ -33,6 +33,27 @@ Production-grade Smart Election Assistant mobile application. Built with React N
 +------------------------+ +---------------------+ +--------------------------+
 ```
 
+## Security & Reliability
+
+- **Security Headers**: Powered by `helmet` for protection against common web vulnerabilities.
+- **Rate Limiting**: Critical endpoints like state transitions are protected via `express-rate-limit`.
+- **HMAC Verification**: All Pub/Sub webhooks require valid `x-goog-signature` headers verified against a shared secret.
+- **Testing**:
+  - **Algorithms**: 100% test coverage for state machine and risk engines using Jest.
+  - **API**: Integration tests for all backend routes using Supertest.
+- **CI/CD**: Automated testing pipeline via GitHub Actions on every push to `main`.
+
+## Accessibility (WCAG 2.1)
+
+- Full Screen Reader support with semantic `accessibilityLabels` and `accessibilityRoles`.
+- AA-compliant color contrast (4.5:1+) across all primary UI paths.
+- Accessible progress tracking for voters through screen-reader-optimized stepper components.
+
+## Development Workflow
+
+- **Linting**: Standardized code quality using ESLint and Prettier across the entire monorepo.
+- **Pre-commit Hooks**: Enforced via `husky` and `lint-staged`. Code must pass linting before it can be committed.
+
 ## Step-by-Step FSM Transition Data Flow
 
 1. **User Action**: Voter taps "Verify Identity" on `actions.tsx`.
@@ -60,98 +81,9 @@ Production-grade Smart Election Assistant mobile application. Built with React N
 | Firebase Auth | 100K active users | Free |
 | **TOTAL** | | **~$592.40** |
 
-## File Tree
-```
-votexa/
-├── package.json
-├── eas.json
-├── .env.example
-├── fix.bat
-├── README.md
-├── scripts/
-│   ├── seedFirestore.ts
-│   ├── setupAlerts.ts
-│   └── setupGCloud.sh
-├── packages/
-│   └── algorithms/
-│       ├── package.json
-│       ├── tsconfig.json
-│       └── src/
-│           ├── DecisionEngine.ts
-│           ├── PriorityQueue.ts
-│           ├── RiskEngine.ts
-│           ├── StateMachine.ts
-│           └── index.ts
-├── apps/
-│   ├── backend/
-│   │   ├── Dockerfile
-│   │   ├── package.json
-│   │   ├── tsconfig.json
-│   │   └── src/
-│   │       ├── index.ts
-│   │       ├── controllers/
-│   │       │   ├── dashboardController.ts
-│   │       │   ├── notificationController.ts
-│   │       │   ├── pollingController.ts
-│   │       │   ├── riskController.ts
-│   │       │   └── transitionController.ts
-│   │       ├── middleware/
-│   │       │   └── observability.ts
-│   │       └── routes/
-│   │           └── index.ts
-│   └── frontend/
-│       ├── app.json
-│       ├── babel.config.js
-│       ├── global.css
-│       ├── metro.config.js
-│       ├── package.json
-│       ├── tailwind.config.js
-│       ├── tsconfig.json
-│       ├── app/
-│       │   ├── _layout.tsx
-│       │   ├── index.tsx
-│       │   ├── (auth)/
-│       │   │   └── login.tsx
-│       │   └── (app)/
-│       │       ├── actions.tsx
-│       │       ├── dashboard.tsx
-│       │       ├── notifications.tsx
-│       │       ├── polling.tsx
-│       │       └── risk.tsx
-│       ├── components/
-│       │   ├── ActionCard.tsx
-│       │   ├── FSMStepper.tsx
-│       │   ├── NotificationBell.tsx
-│       │   ├── PollingStationCard.tsx
-│       │   └── RiskGauge.tsx
-│       ├── config/
-│       │   └── firebase.ts
-│       ├── hooks/
-│       │   ├── useAuth.ts
-│       │   ├── useDashboard.ts
-│       │   ├── usePolling.ts
-│       │   └── useRisk.ts
-│       ├── lib/
-│       │   ├── analytics.ts
-│       │   ├── cache.ts
-│       │   ├── eventBus.ts
-│       │   ├── featureFlags.ts
-│       │   ├── index.ts
-│       │   ├── logger.ts
-│       │   ├── metrics.ts
-│       │   └── secrets.ts
-│       └── services/
-│           ├── intelligence/
-│           │   ├── HybridRecommendationEngine.ts
-│           │   ├── MLRecommendationEngine.ts
-│           │   ├── NotificationScheduler.ts
-│           │   ├── PushService.ts
-│           │   └── TaskQueueService.ts
-│           └── optimization/
-│               └── PollingOptimizer.ts
-```
-
 ## Setup Instructions
 1. Copy `.env.example` to `.env` and fill in Firebase/GCP credentials.
-2. Run `fix.bat` on Windows to clean install dependencies and start the app.
-3. Use `scripts/setupGCloud.sh` to provision GCP resources.
+2. Install dependencies: `npm install`
+3. Run `fix.bat` on Windows to clean install and start.
+4. Run tests: `npm test`
+5. Linting: `npm run lint`

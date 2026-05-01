@@ -1,6 +1,7 @@
 import { getCached } from './cache';
 
-const isNode = typeof process !== 'undefined' && process.versions != null && process.versions.node != null;
+const isNode =
+  typeof process !== 'undefined' && process.versions != null && process.versions.node != null;
 
 export interface FeatureFlags {
   antigravity_mode_enabled: boolean;
@@ -32,11 +33,12 @@ const fetchFlagsFromFirebaseAdmin = async (): Promise<FeatureFlags> => {
       const admin = eval('require')('firebase-admin');
       const remoteConfig = admin.remoteConfig();
       const template = await remoteConfig.getTemplate();
-      
+
       const flags = { ...DEFAULT_FLAGS };
-      
+
       if (template.parameters) {
-        for (const [key, param] of Object.entries(template.parameters)) {
+        for (const [key, paramEntry] of Object.entries(template.parameters)) {
+          const param = paramEntry as any;
           if (param.defaultValue && 'value' in param.defaultValue) {
             const val = param.defaultValue.value;
             if (key in flags) {

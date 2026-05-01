@@ -22,7 +22,7 @@ export default function ActionCard({ title, description, priority, onPress }: Pr
 
   let badgeColor = 'bg-slate-200 text-slate-700';
   let borderLeftColor = 'border-l-slate-400';
-  
+
   if (priority === 'CRITICAL') {
     badgeColor = 'bg-red-100 text-red-800';
     borderLeftColor = 'border-l-red-500';
@@ -35,10 +35,13 @@ export default function ActionCard({ title, description, priority, onPress }: Pr
   }
 
   return (
-    <TouchableOpacity 
-      className={`bg-white p-5 rounded-2xl shadow-sm mb-4 border-l-4 ${borderLeftColor}`}
+    <TouchableOpacity
+      className={`bg-white p-5 rounded-2xl shadow-sm mb-4 border-l-4 ${borderLeftColor} focus:border-2 focus:border-blue-500`}
       onPress={handlePress}
       disabled={loading}
+      accessibilityLabel={`${title}. ${description}. Priority: ${priority}`}
+      accessibilityRole="button"
+      accessibilityHint="Double tap to start this registration step"
     >
       <View className="flex-row justify-between items-start mb-2">
         <Text className="text-lg font-bold text-slate-900 flex-1 mr-2">{title}</Text>
@@ -47,7 +50,7 @@ export default function ActionCard({ title, description, priority, onPress }: Pr
         </View>
       </View>
       <Text className="text-slate-600 mb-4">{description}</Text>
-      
+
       <View className="flex-row justify-end">
         {loading ? (
           <ActivityIndicator color="#3B82F6" />
