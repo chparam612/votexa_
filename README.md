@@ -152,6 +152,71 @@ votexa/
 ```
 
 ## Setup Instructions
-1. Copy `.env.example` to `.env` and fill in Firebase/GCP credentials.
-2. Run `fix.bat` on Windows to clean install dependencies and start the app.
-3. Use `scripts/setupGCloud.sh` to provision GCP resources.
+
+### Step 1 — Prerequisites
+- Install [Node.js 20+](https://nodejs.org)
+- Install [Google Cloud CLI](https://cloud.google.com/sdk/docs/install), then run:
+  ```bash
+  gcloud auth login
+  gcloud auth application-default login
+  ```
+- Install [Expo Go](https://expo.dev/go) on your Android/iOS phone
+
+### Step 2 — Configure environment
+```bash
+cp .env.example .env
+```
+Edit `.env` and fill in:
+- `EXPO_PUBLIC_FIREBASE_API_KEY` — Firebase Console → Project Settings → Web App
+- `EXPO_PUBLIC_FIREBASE_APP_ID` — same page
+- `EXPO_PUBLIC_BACKEND_URL` — set after deploying backend (Step 3)
+
+Place your Firebase service account key at the repo root:
+```
+service-account.json   ← download from Firebase Console → Project Settings → Service Accounts
+```
+
+### Step 3 — Deploy backend to Cloud Run (one-time)
+```bash
+npm run setup:gcloud
+```
+This provisions all GCP resources (Redis, Pub/Sub, BigQuery, Cloud Tasks) and deploys the backend.
+Copy the printed Cloud Run URL into `.env` as `EXPO_PUBLIC_BACKEND_URL`.
+
+### Step 4 — Verify setup
+```bash
+npm run verify
+```
+This checks your `.env`, `service-account.json`, gcloud login, dependencies, and backend health.
+
+### Step 5 — Run locally
+
+**Windows:**
+```bat
+fix.bat
+```
+
+**Mac / Linux:**
+```bash
+bash fix.sh
+```
+
+Both scripts clean caches, install dependencies, start the backend, and launch the Expo Metro server.
+Scan the QR code with Expo Go on your phone (phone and PC must be on the same Wi-Fi).
+
+### Step 6 — Build a standalone APK
+```bash
+npm install -g eas-cli
+eas login
+npm run build:android -w apps/frontend
+```
+
+### View Logs & Results
+| What | Where |
+|------|-------|
+| Backend logs (live) | `gcloud beta run services logs tail votexa-backend --region=asia-south1` |
+| Backend logs (Cloud Console) | Cloud Run → votexa-backend → **LOGS** tab |
+| Analytics events | BigQuery → `votexa_analytics.events` |
+| Custom metrics | Cloud Monitoring → Metrics Explorer → `custom.googleapis.com/votexa/*` |
+| Frontend errors | Expo terminal output; shake phone → Dev Menu → Debug |
+| Backend health | `GET $EXPO_PUBLIC_BACKEND_URL/api/health` → `{"status":"ok"}` |

@@ -13,7 +13,9 @@
     "build": "npm run build -w packages/algorithms && npm run build -w apps/backend",
     "seed": "npx ts-node scripts/seedFirestore.ts",
     "setup:gcloud": "bash scripts/setupGCloud.sh",
-    "fix": "fix.bat"
+    "verify": "bash scripts/verify-setup.sh",
+    "fix": "fix.bat",
+    "fix:linux": "bash fix.sh"
   },
   "devDependencies": {
     "rimraf": "^5.0.5",
