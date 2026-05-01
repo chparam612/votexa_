@@ -4,6 +4,14 @@ import { useRouter } from 'expo-router';
 import FSMStepper from '../components/FSMStepper';
 import RiskGauge from '../components/RiskGauge';
 import { auth } from '../config/firebase';
+import type { RiskLevel } from '../../../packages/algorithms/src/RiskEngine';
+
+function getRiskLevel(score: number): RiskLevel {
+  if (score >= 80) return 'CRITICAL';
+  if (score >= 60) return 'HIGH';
+  if (score >= 30) return 'MEDIUM';
+  return 'LOW';
+}
 
 export default function DashboardScreen() {
   const router = useRouter();
@@ -32,7 +40,7 @@ export default function DashboardScreen() {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Election Risk Level</Text>
-        <RiskGauge score={riskScore} />
+        <RiskGauge score={riskScore} level={getRiskLevel(riskScore)} />
         <TouchableOpacity style={styles.cardButton} onPress={() => router.push('/risk')}>
           <Text style={styles.cardButtonText}>View Detailed Analysis</Text>
         </TouchableOpacity>

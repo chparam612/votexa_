@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import * as admin from 'firebase-admin';
 import { log, recordMetric } from '../../../../apps/frontend/lib';
 
 export const observabilityMiddleware = (req: Request, res: Response, next: NextFunction) => {
@@ -34,7 +35,6 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
 
   const token = authHeader.split('Bearer ')[1];
   try {
-    const admin = eval('require')('firebase-admin');
     const decodedToken = await admin.auth().verifyIdToken(token);
     (req as any).user = decodedToken;
     next();
