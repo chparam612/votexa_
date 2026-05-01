@@ -1,0 +1,27 @@
+{
+  "name": "votexa-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "clean": "npm run clean -w apps/frontend && npm run clean -w apps/backend",
+    "dev:frontend": "npm run dev -w apps/frontend",
+    "dev:backend": "npm run dev -w apps/backend",
+    "build": "npm run build -w packages/algorithms && npm run build -w apps/backend",
+    "seed": "npx ts-node scripts/seedFirestore.ts",
+    "setup:gcloud": "bash scripts/setupGCloud.sh",
+    "fix": "fix.bat"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.5",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@google-cloud/monitoring": "^5.3.1"
+  }
+}
