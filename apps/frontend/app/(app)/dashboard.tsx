@@ -16,7 +16,7 @@ export default function DashboardScreen() {
   const [antigravity, setAntigravity] = useState(false);
 
   useEffect(() => {
-    getFlags().then(f => setAntigravity(f.antigravity_mode_enabled));
+    getFlags().then((f) => setAntigravity(f.antigravity_mode_enabled));
   }, []);
 
   const handleActionPress = async (event: string) => {
@@ -26,9 +26,9 @@ export default function DashboardScreen() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ userId: auth.currentUser?.uid, event })
+        body: JSON.stringify({ userId: auth.currentUser?.uid, event }),
       });
       refetch();
     } catch (e) {
@@ -46,43 +46,79 @@ export default function DashboardScreen() {
 
   return (
     <ScrollView className={`flex-1 ${antigravity ? 'bg-black' : 'bg-slate-50'}`}>
-      <View className={`px-6 pt-16 pb-6 flex-row justify-between items-center ${antigravity ? 'bg-purple-900' : 'bg-blue-900'}`}>
+      <View
+        className={`px-6 pt-16 pb-6 flex-row justify-between items-center ${antigravity ? 'bg-purple-900' : 'bg-blue-900'}`}
+      >
         <View>
-          <Text className="text-3xl font-bold text-white">Dashboard</Text>
-          <Text className="text-blue-200 mt-1">Hello, {auth.currentUser?.email?.split('@')[0]}</Text>
+          <Text className="text-3xl font-bold text-white" accessibilityRole="header">
+            Dashboard
+          </Text>
+          <Text
+            className="text-blue-200 mt-1"
+            accessibilityLabel={`Logged in as ${auth.currentUser?.email?.split('@')[0]}`}
+          >
+            Hello, {auth.currentUser?.email?.split('@')[0]}
+          </Text>
         </View>
         <NotificationBell />
       </View>
 
       {error ? (
-        <View className="m-6 p-4 bg-red-100 rounded-xl">
+        <View className="m-6 p-4 bg-red-100 rounded-xl" accessibilityRole="alert">
           <Text className="text-red-800">{error}</Text>
         </View>
       ) : null}
 
       <View className="p-6 space-y-8 pb-12">
-        <View>
-          <Text className={`text-lg font-bold mb-4 ${antigravity ? 'text-white' : 'text-slate-900'}`}>Registration Progress</Text>
+        <View accessibilityLabel="Registration Progress Section">
+          <Text
+            className={`text-lg font-bold mb-4 ${antigravity ? 'text-white' : 'text-slate-900'}`}
+            accessibilityRole="header"
+          >
+            Registration Progress
+          </Text>
           <FSMStepper currentState={data?.fsmState || 'NOT_REGISTERED'} />
         </View>
 
-        <View>
-          <Text className={`text-lg font-bold mb-4 ${antigravity ? 'text-white' : 'text-slate-900'}`}>Risk Analysis</Text>
-          <RiskGauge score={data?.riskScore || 0} level={data?.riskScore && data.riskScore > 60 ? 'HIGH' : 'LOW'} />
-          <TouchableOpacity className="mt-4 bg-blue-100 p-3 rounded-xl items-center" onPress={() => router.push('/risk')}>
+        <View accessibilityLabel="Risk Analysis Section">
+          <Text
+            className={`text-lg font-bold mb-4 ${antigravity ? 'text-white' : 'text-slate-900'}`}
+            accessibilityRole="header"
+          >
+            Risk Analysis
+          </Text>
+          <RiskGauge
+            score={data?.riskScore || 0}
+            level={data?.riskScore && data.riskScore > 60 ? 'HIGH' : 'LOW'}
+          />
+          <TouchableOpacity
+            className="mt-4 bg-blue-100 p-3 rounded-xl items-center focus:border-2 focus:border-blue-600"
+            onPress={() => router.push('/risk')}
+            accessibilityLabel="View detailed risk breakdown"
+            accessibilityRole="button"
+          >
             <Text className="text-blue-800 font-bold">View Detailed Breakdown</Text>
           </TouchableOpacity>
         </View>
 
-        <View>
+        <View accessibilityLabel="Recommended Actions Section">
           <View className="flex-row justify-between items-center mb-4">
-            <Text className={`text-lg font-bold ${antigravity ? 'text-white' : 'text-slate-900'}`}>Recommended Actions</Text>
-            <TouchableOpacity onPress={() => router.push('/actions')}>
+            <Text
+              className={`text-lg font-bold ${antigravity ? 'text-white' : 'text-slate-900'}`}
+              accessibilityRole="header"
+            >
+              Recommended Actions
+            </Text>
+            <TouchableOpacity
+              onPress={() => router.push('/actions')}
+              accessibilityLabel="View all recommended actions"
+              accessibilityRole="button"
+            >
               <Text className="text-blue-600 font-semibold">View All</Text>
             </TouchableOpacity>
           </View>
-          
-          {data?.actions?.map(action => (
+
+          {data?.actions?.map((action) => (
             <ActionCard
               key={action.id}
               title={action.title}
@@ -92,19 +128,28 @@ export default function DashboardScreen() {
             />
           ))}
           {(!data?.actions || data.actions.length === 0) && (
-            <Text className="text-slate-500 italic">You're all caught up!</Text>
+            <Text className="text-slate-500 italic">{"You're all caught up!"}</Text>
           )}
         </View>
 
-        <View>
+        <View accessibilityLabel="Nearby Polling Stations Section">
           <View className="flex-row justify-between items-center mb-4">
-            <Text className={`text-lg font-bold ${antigravity ? 'text-white' : 'text-slate-900'}`}>Top Polling Stations</Text>
-            <TouchableOpacity onPress={() => router.push('/polling')}>
+            <Text
+              className={`text-lg font-bold ${antigravity ? 'text-white' : 'text-slate-900'}`}
+              accessibilityRole="header"
+            >
+              Top Polling Stations
+            </Text>
+            <TouchableOpacity
+              onPress={() => router.push('/polling')}
+              accessibilityLabel="View polling stations on map"
+              accessibilityRole="button"
+            >
               <Text className="text-blue-600 font-semibold">View Map</Text>
             </TouchableOpacity>
           </View>
 
-          {data?.pollingStations?.map(station => (
+          {data?.pollingStations?.map((station) => (
             <PollingStationCard key={station.id} {...station} />
           ))}
           {(!data?.pollingStations || data.pollingStations.length === 0) && (
@@ -112,9 +157,11 @@ export default function DashboardScreen() {
           )}
         </View>
 
-        <TouchableOpacity 
-          className="mt-4 py-4 items-center"
+        <TouchableOpacity
+          className="mt-4 py-4 items-center focus:border-2 focus:border-red-500"
           onPress={() => auth.signOut()}
+          accessibilityLabel="Sign out of your account"
+          accessibilityRole="button"
         >
           <Text className="text-red-500 font-bold">Sign Out</Text>
         </TouchableOpacity>

@@ -6,12 +6,15 @@ export interface ActionRecommendation {
   id: string;
   title: string;
   description: string;
-  priority: 'HIGH' | 'MEDIUM' | 'LOW';
+  priority: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
   event: string;
 }
 
 export class DecisionEngine {
-  public static getRuleBasedActions(state: VoterState, experience: ExperienceLevel): ActionRecommendation[] {
+  public static getRuleBasedActions(
+    state: VoterState,
+    experience: ExperienceLevel,
+  ): ActionRecommendation[] {
     switch (state) {
       case 'START':
         return [
@@ -20,20 +23,21 @@ export class DecisionEngine {
             title: 'Check Registration Status',
             description: 'Find out if you are already registered to vote.',
             priority: 'HIGH',
-            event: 'CHECK_STATUS'
-          }
+            event: 'CHECK_STATUS',
+          },
         ];
       case 'NOT_REGISTERED':
         return [
           {
             id: 'submit_form',
             title: 'Submit Voter Registration',
-            description: experience === 'beginner' 
-              ? 'Complete Form 6 to register as a new voter. Need help? Try the AI assistant.'
-              : 'Submit Form 6 online via the NVSP portal.',
+            description:
+              experience === 'beginner'
+                ? 'Complete Form 6 to register as a new voter. Need help? Try the AI assistant.'
+                : 'Submit Form 6 online via the NVSP portal.',
             priority: 'HIGH',
-            event: 'SUBMIT_FORM'
-          }
+            event: 'SUBMIT_FORM',
+          },
         ];
       case 'REGISTERED':
         return [
@@ -42,8 +46,8 @@ export class DecisionEngine {
             title: 'Track Application',
             description: 'Track the status of your submitted application.',
             priority: 'MEDIUM',
-            event: 'APPROVE_REGISTRATION'
-          }
+            event: 'APPROVE_REGISTRATION',
+          },
         ];
       case 'VERIFIED':
         return [
@@ -52,8 +56,8 @@ export class DecisionEngine {
             title: 'Find Polling Station',
             description: 'Locate your assigned polling booth and check the wait times.',
             priority: 'HIGH',
-            event: 'FIND_POLLING_STATION'
-          }
+            event: 'FIND_POLLING_STATION',
+          },
         ];
       case 'READY':
         return [
@@ -62,8 +66,8 @@ export class DecisionEngine {
             title: 'Cast Your Vote',
             description: 'Go to your polling station and cast your vote today!',
             priority: 'CRITICAL',
-            event: 'CAST_VOTE'
-          }
+            event: 'CAST_VOTE',
+          },
         ];
       default:
         return [];
@@ -71,9 +75,9 @@ export class DecisionEngine {
   }
 
   public static getRecommendations(
-    state: VoterState, 
+    state: VoterState,
     experience: ExperienceLevel,
-    mlActions?: ActionRecommendation[]
+    mlActions?: ActionRecommendation[],
   ): ActionRecommendation[] {
     if (mlActions && mlActions.length > 0) {
       return mlActions; // ML took precedence
