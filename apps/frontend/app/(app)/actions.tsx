@@ -13,14 +13,14 @@ export default function ActionsScreen() {
   const handleAction = async (event: string) => {
     setTransitioning(true);
     try {
-      const token = await auth.currentUser?.getIdToken();
+      const token = await auth().currentUser?.getIdToken();
       await fetch(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/actions/transition`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ userId: auth.currentUser?.uid, event })
+        body: JSON.stringify({ userId: auth().currentUser?.uid, event })
       });
       await refetch();
     } catch (e) {

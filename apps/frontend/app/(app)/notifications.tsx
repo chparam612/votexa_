@@ -10,20 +10,20 @@ export default function NotificationsScreen() {
   const [prefs, setPrefs] = useState({ push: true, email: false, sms: false });
 
   useEffect(() => {
-    if (!auth.currentUser) return;
-    
+    if (!auth().currentUser) return;
+
     // Listen to notifications
     const q = query(
-      collection(db, 'users', auth.currentUser.uid, 'notifications'),
+      collection(db, 'users', auth().currentUser!.uid, 'notifications'),
       orderBy('timestamp', 'desc')
     );
-    
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
       setNotifications(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     });
 
     // Get preferences
-    getDoc(doc(db, 'users', auth.currentUser.uid)).then(docSnap => {
+    getDoc(doc(db, 'users', auth().currentUser!.uid)).then(docSnap => {
       if (docSnap.exists() && docSnap.data().notificationPrefs) {
         setPrefs(docSnap.data().notificationPrefs);
       }
@@ -35,8 +35,8 @@ export default function NotificationsScreen() {
   const togglePref = async (key: keyof typeof prefs) => {
     const newPrefs = { ...prefs, [key]: !prefs[key] };
     setPrefs(newPrefs);
-    if (auth.currentUser) {
-      await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+    if (auth().currentUser) {
+      await updateDoc(doc(db, 'users', auth().currentUser!.uid), {
         notificationPrefs: newPrefs
       });
     }
@@ -44,7 +44,7 @@ export default function NotificationsScreen() {
 
   const testPush = async () => {
     try {
-      const token = await auth.currentUser?.getIdToken();
+      const token = await auth().currentUser?.getIdToken();
       await fetch(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/notifications/deliver`, {
         method: 'POST',
         headers: {
@@ -52,7 +52,7 @@ export default function NotificationsScreen() {
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          userId: auth.currentUser?.uid,
+          userId: auth().currentUser?.uid,
           title: "Test Notification",
           body: "This is a test push notification from Votexa.",
           channels: ["push"]

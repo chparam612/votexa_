@@ -20,7 +20,7 @@ export default function DashboardScreen() {
 
   useEffect(() => {
     // Check auth
-    if (!auth.currentUser) {
+    if (!auth().currentUser) {
       router.replace('/');
     }
     // Register FCM Token here
@@ -30,7 +30,7 @@ export default function DashboardScreen() {
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Dashboard</Text>
-        <Text style={styles.headerSubtitle}>Welcome, {auth.currentUser?.email || 'Voter'}</Text>
+        <Text style={styles.headerSubtitle}>Welcome, {auth().currentUser?.email || 'Voter'}</Text>
       </View>
 
       <View style={styles.section}>
@@ -70,7 +70,7 @@ export default function DashboardScreen() {
       </View>
       
       <TouchableOpacity style={styles.logoutButton} onPress={() => {
-        auth.signOut();
+        auth().signOut();
         router.replace('/');
       }}>
         <Text style={styles.logoutText}>Logout</Text>

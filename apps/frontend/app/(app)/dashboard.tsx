@@ -21,14 +21,14 @@ export default function DashboardScreen() {
 
   const handleActionPress = async (event: string) => {
     try {
-      const token = await auth.currentUser?.getIdToken();
+      const token = await auth().currentUser?.getIdToken();
       await fetch(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/actions/transition`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ userId: auth.currentUser?.uid, event }),
+        body: JSON.stringify({ userId: auth().currentUser?.uid, event }),
       });
       refetch();
     } catch (e) {
@@ -55,9 +55,9 @@ export default function DashboardScreen() {
           </Text>
           <Text
             className="text-blue-200 mt-1"
-            accessibilityLabel={`Logged in as ${auth.currentUser?.email?.split('@')[0]}`}
+            accessibilityLabel={`Logged in as ${auth().currentUser?.email?.split('@')[0]}`}
           >
-            Hello, {auth.currentUser?.email?.split('@')[0]}
+            Hello, {auth().currentUser?.email?.split('@')[0]}
           </Text>
         </View>
         <NotificationBell />
@@ -159,7 +159,7 @@ export default function DashboardScreen() {
 
         <TouchableOpacity
           className="mt-4 py-4 items-center focus:border-2 focus:border-red-500"
-          onPress={() => auth.signOut()}
+          onPress={() => auth().signOut()}
           accessibilityLabel="Sign out of your account"
           accessibilityRole="button"
         >

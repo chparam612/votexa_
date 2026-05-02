@@ -21,9 +21,9 @@ export default function ActionsScreen() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${await auth.currentUser?.getIdToken()}`
+          'Authorization': `Bearer ${await auth().currentUser?.getIdToken()}`
         },
-        body: JSON.stringify({ userId: auth.currentUser?.uid, event })
+        body: JSON.stringify({ userId: auth().currentUser?.uid, event })
       });
       
       if (response.ok) {

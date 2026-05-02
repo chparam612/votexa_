@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../../config/firebase';
 
@@ -15,9 +14,9 @@ export default function LoginScreen() {
     setError('');
     try {
       if (isLogin) {
-        await signInWithEmailAndPassword(auth, email, password);
+        await auth().signInWithEmailAndPassword(email, password);
       } else {
-        const credential = await createUserWithEmailAndPassword(auth, email, password);
+        const credential = await auth().createUserWithEmailAndPassword(email, password);
         // Create the Firestore user document so the backend can find the user.
         // If this fails, delete the auth account to keep both stores consistent.
         try {
