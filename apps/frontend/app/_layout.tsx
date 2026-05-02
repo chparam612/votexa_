@@ -1,44 +1,35 @@
-import '../global.css';
-import { Stack, useRouter, useSegments } from 'expo-router';
+import { Stack } from 'expo-router';
 import { useEffect } from 'react';
-import { ActivityIndicator, View } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useAuth } from '../hooks/useAuth';
+import { auth } from '../config/firebase';
+import { useRouter, useSegments } from 'expo-router';
 
 export default function RootLayout() {
   const segments = useSegments();
   const router = useRouter();
-  const { user, initialized } = useAuth();
 
   useEffect(() => {
-    if (!initialized) return;
+    if (!auth) return;
 
-    const inAuthGroup = segments[0] === '(auth)';
+    const unsubscribe = auth().onAuthStateChanged((user) => {
+      const inAuthGroup = segments[0] === '(auth)';
 
-    if (!user && !inAuthGroup) {
-      // Redirect to login if not authenticated
-      router.replace('/(auth)/login');
-    } else if (user && inAuthGroup) {
-      // Redirect to dashboard if authenticated
-      router.replace('/(app)/dashboard');
-    }
-  }, [user, initialized, segments]);
+      if (!user && !inAuthGroup) {
+        // Redirect to login if not authenticated
+        router.replace('/(auth)/login');
+      } else if (user && inAuthGroup) {
+        // Redirect to dashboard if authenticated
+        router.replace('/(app)/dashboard');
+      }
+    });
 
-  if (!initialized) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
+    return unsubscribe;
+  }, [segments]);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="(auth)" />
-        <Stack.Screen name="(app)" />
-      </Stack>
-    </GestureHandlerRootView>
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="index" />
+      <Stack.Screen name="(auth)" />
+      <Stack.Screen name="(app)" />
+    </Stack>
   );
 }

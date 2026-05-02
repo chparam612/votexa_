@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import firestore from '@react-native-firebase/firestore';
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../../config/firebase';
 
 export default function LoginScreen() {
@@ -10,27 +10,35 @@ export default function LoginScreen() {
   const [error, setError] = useState('');
 
   const handleAuth = async (isLogin: boolean) => {
+    if (!email || !password) {
+      setError('Please enter both email and password');
+      return;
+    }
+
     setLoading(true);
     setError('');
     try {
       if (isLogin) {
-        await auth().signInWithEmailAndPassword(email, password);
+        await auth().signInWithEmailAndPassword(email.trim(), password);
       } else {
-        const credential = await auth().createUserWithEmailAndPassword(email, password);
+        const credential = await auth().createUserWithEmailAndPassword(email.trim(), password);
         // Create the Firestore user document so the backend can find the user.
         // If this fails, delete the auth account to keep both stores consistent.
         try {
-          await setDoc(doc(db, 'users', credential.user.uid), {
-            email: credential.user.email,
-            voterState: 'NOT_REGISTERED',
-            experienceLevel: 'beginner',
-            completedSteps: [],
-            location: {},
-            deadlines: {},
-            notificationPrefs: { push: true, email: false, sms: false },
-            createdAt: serverTimestamp(),
-            lastActive: serverTimestamp(),
-          });
+          await db()
+            .collection('users')
+            .doc(credential.user.uid)
+            .set({
+              email: credential.user.email,
+              voterState: 'NOT_REGISTERED',
+              experienceLevel: 'beginner',
+              completedSteps: [],
+              location: {},
+              deadlines: {},
+              notificationPrefs: { push: true, email: false, sms: false },
+              createdAt: firestore.FieldValue.serverTimestamp(),
+              lastActive: firestore.FieldValue.serverTimestamp(),
+            });
         } catch (firestoreError) {
           // Roll back the auth account so the user can retry cleanly
           await credential.user.delete();
@@ -68,17 +76,21 @@ export default function LoginScreen() {
 
         {error ? <Text className="text-red-500 text-center mb-4">{error}</Text> : null}
 
-        <TouchableOpacity 
-          className="bg-blue-900 p-4 rounded-xl items-center mb-3" 
-          onPress={() => handleAuth(true)} 
+        <TouchableOpacity
+          className="bg-blue-900 p-4 rounded-xl items-center mb-3"
+          onPress={() => handleAuth(true)}
           disabled={loading}
         >
-          {loading ? <ActivityIndicator color="#fff" /> : <Text className="text-white text-base font-bold">Login</Text>}
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text className="text-white text-base font-bold">Login</Text>
+          )}
         </TouchableOpacity>
 
-        <TouchableOpacity 
-          className="bg-transparent border border-blue-900 p-4 rounded-xl items-center" 
-          onPress={() => handleAuth(false)} 
+        <TouchableOpacity
+          className="bg-transparent border border-blue-900 p-4 rounded-xl items-center"
+          onPress={() => handleAuth(false)}
           disabled={loading}
         >
           <Text className="text-blue-900 text-base font-bold">Register Account</Text>

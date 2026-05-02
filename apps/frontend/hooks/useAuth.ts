@@ -1,41 +1,47 @@
 import { useState, useEffect } from 'react';
-import { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import { User, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../config/firebase';
 
 export const useAuth = () => {
-  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [initialized, setInitialized] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let unsubscribe: (() => void) | undefined;
+    // Check if auth is properly initialized
+    if (!auth) {
+      console.error('❌ Firebase auth not initialized');
+      setError('Firebase authentication not available');
+      setLoading(false);
+      setInitialized(true);
+      return;
+    }
 
     try {
-      unsubscribe = auth().onAuthStateChanged(
+      const unsubscribe = onAuthStateChanged(
+        auth,
         (currentUser) => {
           setUser(currentUser);
           setLoading(false);
           setInitialized(true);
+          setError(null);
         },
-        (authError) => {
-          console.error('[useAuth] Auth listener error:', authError);
-          setError(authError.message);
+        (error) => {
+          console.error('❌ Auth state listener error:', error);
+          setError(error.message || 'Authentication error');
           setLoading(false);
           setInitialized(true);
-        }
+        },
       );
+
+      return () => unsubscribe();
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Auth initialization failed';
-      console.error('[useAuth] Failed to set up auth listener:', message);
-      setError(message);
+      console.error('❌ useAuth hook error:', err);
+      setError(err instanceof Error ? err.message : 'Unknown error');
       setLoading(false);
       setInitialized(true);
     }
-
-    return () => {
-      if (unsubscribe) unsubscribe();
-    };
   }, []);
 
   return { user, loading, initialized, error };
