@@ -14,7 +14,6 @@ process.on('uncaughtException', (err) => {
 });
 process.on('unhandledRejection', (reason) => {
   console.error('UNHANDLED REJECTION:', reason);
-  process.exit(1);
 });
 
 dotenv.config({ path: path.resolve(process.cwd(), '../../.env') });

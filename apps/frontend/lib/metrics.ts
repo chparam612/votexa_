@@ -10,15 +10,21 @@ export const recordMetric = async (
     try {
       const { MetricServiceClient } = eval('require')('@google-cloud/monitoring');
       const path = eval('require')('path');
+      const fs = eval('require')('fs');
 
-      // Use project root path by default
-      const keyPath =
-        process.env.GOOGLE_APPLICATION_CREDENTIALS ||
-        path.resolve(process.cwd(), '../../service-account.json');
+      const isCloudRun = !!process.env.K_SERVICE;
+      const options: any = {};
 
-      const client = new MetricServiceClient({
-        keyFilename: keyPath,
-      });
+      if (!isCloudRun) {
+        const keyPath =
+          process.env.GOOGLE_APPLICATION_CREDENTIALS ||
+          path.resolve(process.cwd(), '../../service-account.json');
+        if (fs.existsSync(keyPath)) {
+          options.keyFilename = keyPath;
+        }
+      }
+
+      const client = new MetricServiceClient(options);
 
       const projectId = process.env.GOOGLE_CLOUD_PROJECT || 'votexa-ac15c';
 
