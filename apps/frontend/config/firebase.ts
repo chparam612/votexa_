@@ -32,7 +32,9 @@ const firebaseConfig = {
   appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
 };
 
-let db: Firestore;
+// The definite assignment assertion (!) is safe here: if initializeApp throws,
+// the module itself throws and `db` is never exported in an undefined state.
+let db!: Firestore;
 
 try {
   const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();

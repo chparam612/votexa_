@@ -8,7 +8,7 @@ import { useAuth } from '../hooks/useAuth';
 export default function RootLayout() {
   const segments = useSegments();
   const router = useRouter();
-  const { user, loading, initialized } = useAuth();
+  const { user, initialized } = useAuth();
 
   useEffect(() => {
     if (!initialized) return;
@@ -24,7 +24,7 @@ export default function RootLayout() {
     }
   }, [user, initialized, segments]);
 
-  if (loading || !initialized) {
+  if (!initialized) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <ActivityIndicator size="large" />
