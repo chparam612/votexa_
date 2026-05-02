@@ -17,18 +17,15 @@ export default function ActionsScreen() {
   const handleAction = async (event: string, id: string) => {
     setLoading(true);
     try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/actions/transition`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${await auth.currentUser?.getIdToken()}`,
-          },
-          body: JSON.stringify({ userId: auth.currentUser?.uid, event }),
+      const response = await fetch(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/actions/transition`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${await auth().currentUser?.getIdToken()}`
         },
-      );
-
+        body: JSON.stringify({ userId: auth().currentUser?.uid, event })
+      });
+      
       if (response.ok) {
         setCompletedSteps([...completedSteps, id]);
       }

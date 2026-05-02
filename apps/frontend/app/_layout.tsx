@@ -1,7 +1,8 @@
+import '../global.css';
 import { Stack } from 'expo-router';
 import { useEffect } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { auth } from '../config/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
 import { useRouter, useSegments } from 'expo-router';
 
 export default function RootLayout() {
@@ -9,9 +10,9 @@ export default function RootLayout() {
   const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = auth().onAuthStateChanged((user) => {
       const inAuthGroup = segments[0] === '(auth)';
-      
+
       if (!user && !inAuthGroup) {
         // Redirect to login if not authenticated
         router.replace('/(auth)/login');
@@ -25,10 +26,12 @@ export default function RootLayout() {
   }, [segments]);
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="index" />
-      <Stack.Screen name="(auth)" />
-      <Stack.Screen name="(app)" />
-    </Stack>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="(app)" />
+      </Stack>
+    </GestureHandlerRootView>
   );
 }

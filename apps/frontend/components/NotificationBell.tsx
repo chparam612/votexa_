@@ -9,10 +9,10 @@ export default function NotificationBell() {
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    if (!auth.currentUser) return;
+    if (!auth().currentUser) return;
 
     const q = query(
-      collection(db, 'users', auth.currentUser.uid, 'notifications'),
+      collection(db, 'users', auth().currentUser!.uid, 'notifications'),
       where('read', '==', false),
     );
 

@@ -6,12 +6,14 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.votexa.app"
     },
     "android": {
       "package": "com.votexa.app",
+      "googleServicesFile": "./google-services.json",
       "softwareKeyboardLayoutMode": "pan",
       "permissions": [
         "CAMERA",
@@ -25,7 +27,8 @@
     },
     "plugins": [
       "expo-router",
-      "expo-build-properties"
+      "expo-build-properties",
+      "@react-native-firebase/app"
     ],
     "experiments": {
       "typedRoutes": true

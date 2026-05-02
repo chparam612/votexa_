@@ -10,6 +10,8 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 service-account.json
+google-services.json
+GoogleService-Info.plist
 *.jks
 *.p8
 *.p12
