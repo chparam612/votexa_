@@ -1,13 +1,19 @@
 // Mock Firebase Admin
 jest.mock('firebase-admin', () => {
+  const mockNotificationsCollection = {
+    add: jest.fn(() => Promise.resolve({ id: 'notification-id' })),
+  };
+
   const mockDoc = {
     get: jest.fn(() => Promise.resolve({ exists: true, data: () => ({ voterState: 'START' }) })),
     set: jest.fn(() => Promise.resolve()),
     update: jest.fn(() => Promise.resolve()),
+    collection: jest.fn(() => mockNotificationsCollection),
   };
 
   const mockCollection = {
     doc: jest.fn(() => mockDoc),
+    where: jest.fn(() => ({ get: jest.fn(() => Promise.resolve({ docs: [] })) })),
   };
 
   const mockFirestore = {
@@ -71,4 +77,35 @@ jest.mock('../../../../apps/frontend/lib', () => ({
   trackEvent: jest.fn(),
   getFlags: jest.fn(() => Promise.resolve({ use_ml_recommendations: false })),
   getCached: jest.fn((key, ttl, fn) => fn()),
+}));
+
+// Mock HybridRecommendationEngine
+jest.mock('../../../../apps/frontend/services/intelligence/HybridRecommendationEngine', () => ({
+  HybridRecommendationEngine: {
+    getRecommendations: jest.fn(() =>
+      Promise.resolve([
+        {
+          id: 'check_status',
+          title: 'Check Registration Status',
+          description: 'Verify your current voter status',
+          priority: 'HIGH',
+          event: 'CHECK_STATUS',
+        },
+      ]),
+    ),
+  },
+}));
+
+// Mock PollingOptimizer
+jest.mock('../../../../apps/frontend/services/optimization/PollingOptimizer', () => ({
+  PollingOptimizer: {
+    getTopStations: jest.fn(() => Promise.resolve([])),
+  },
+}));
+
+// Mock PushService
+jest.mock('../../../../apps/frontend/services/intelligence/PushService', () => ({
+  PushService: {
+    send: jest.fn(() => Promise.resolve(true)),
+  },
 }));

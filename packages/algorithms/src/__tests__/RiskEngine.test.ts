@@ -38,4 +38,54 @@ describe('RiskEngine', () => {
     const result = RiskEngine.calculate(input, thresholds);
     expect(result.score).toBe(100);
   });
+
+  it('should treat negative daysLeft as 0 and return CRITICAL', () => {
+    const input: RiskInput = { remainingSteps: 3, daysLeft: -5 };
+    const result = RiskEngine.calculate(input, thresholds);
+    expect(result.score).toBe(100);
+    expect(result.level).toBe('CRITICAL');
+  });
+
+  it('should return MEDIUM risk for mid-range scenarios', () => {
+    // Score = (4/5) * (1/2) * 100 = 40 → between high/2 (35) and high (70) → MEDIUM
+    const input: RiskInput = { remainingSteps: 4, daysLeft: 2 };
+    const result = RiskEngine.calculate(input, thresholds);
+    expect(result.level).toBe('MEDIUM');
+  });
+
+  describe('batchCalculate', () => {
+    it('should calculate risk for multiple inputs', () => {
+      const inputs: RiskInput[] = [
+        { remainingSteps: 1, daysLeft: 30 },
+        { remainingSteps: 4, daysLeft: 1 },
+      ];
+      const results = RiskEngine.batchCalculate(inputs, thresholds);
+      expect(results).toHaveLength(2);
+      expect(results[0].level).toBe('LOW');
+      expect(results[1].level).toBe('HIGH');
+    });
+
+    it('should return an empty array for empty input', () => {
+      const results = RiskEngine.batchCalculate([], thresholds);
+      expect(results).toEqual([]);
+    });
+  });
+
+  describe('simulate', () => {
+    it('should return results for multiple scenarios', () => {
+      const scenarios: RiskInput[] = [
+        { remainingSteps: 5, daysLeft: 0 },
+        { remainingSteps: 1, daysLeft: 30 },
+      ];
+      const results = RiskEngine.simulate(scenarios, thresholds);
+      expect(results).toHaveLength(2);
+      expect(results[0].score).toBe(100);
+      expect(results[1].level).toBe('LOW');
+    });
+
+    it('should return an empty array for empty scenarios', () => {
+      const results = RiskEngine.simulate([], thresholds);
+      expect(results).toEqual([]);
+    });
+  });
 });

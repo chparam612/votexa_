@@ -22,7 +22,7 @@ export class PollingOptimizer {
     if (!isNode) return destinations.map(() => 0);
     try {
       const apiKey = await getSecret('MAPS_API_KEY');
-      const axios = eval('require')('axios');
+      const axios = require('axios');
       
       const originsStr = `${origin.lat},${origin.lng}`;
       const destsStr = destinations.map(d => `${d.location.lat},${d.location.lng}`).join('|');
@@ -43,7 +43,7 @@ export class PollingOptimizer {
     
     // We cache by district to avoid redundant DB reads and Maps API calls
     return getCached(`polling:${district}`, 300, async () => {
-      const admin = eval('require')('firebase-admin');
+      const admin = require('firebase-admin');
       const db = admin.firestore();
       
       // Get user location

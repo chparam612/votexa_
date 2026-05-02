@@ -31,7 +31,7 @@ export default function NotificationBell() {
       accessibilityRole="button"
       accessibilityHint="Double tap to view your notifications"
     >
-      <Text className="text-2xl" accessibilityRole="image">
+      <Text className="text-2xl" accessibilityLabel="Bell icon">
         🔔
       </Text>
       {unreadCount > 0 && (

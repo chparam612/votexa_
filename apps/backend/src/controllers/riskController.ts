@@ -3,10 +3,11 @@ import * as admin from 'firebase-admin';
 import { getCached } from '../../../../apps/frontend/lib';
 import { RiskEngine } from '../../../../packages/algorithms/src/RiskEngine';
 import { StateMachine } from '../../../../packages/algorithms/src/StateMachine';
+import { AuthenticatedRequest } from '../types';
 
-export const getRisk = async (req: Request, res: Response) => {
+export const getRisk = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const userId = (req as any).user?.uid;
+    const userId = req.user?.uid;
     if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
     const riskData = await getCached(`risk:${userId}`, 30, async () => {

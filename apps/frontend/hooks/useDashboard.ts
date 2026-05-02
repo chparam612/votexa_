@@ -1,11 +1,30 @@
 import { useState, useEffect, useCallback } from 'react';
 import { auth } from '../config/firebase';
 
+export interface Action {
+  id: string;
+  title: string;
+  description: string;
+  priority: 'HIGH' | 'MEDIUM' | 'LOW' | 'CRITICAL';
+  event: string;
+}
+
+export interface PollingStation {
+  id: string;
+  name: string;
+  address: string;
+  distance_km: number;
+  score: number;
+  maps_url: string;
+  avg_wait_minutes: number;
+  crowd_factor: number;
+}
+
 export interface DashboardData {
   fsmState: string;
   riskScore: number;
-  actions: any[];
-  pollingStations: any[];
+  actions: Action[];
+  pollingStations: PollingStation[];
 }
 
 export const useDashboard = () => {

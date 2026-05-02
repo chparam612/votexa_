@@ -2,7 +2,7 @@ const isNode = typeof process !== 'undefined' && process.versions != null && pro
 
 export const publishEvent = async (topic: string, payload: any): Promise<void> => {
   if (isNode) {
-    const { PubSub } = eval('require')('@google-cloud/pubsub');
+    const { PubSub } = require('@google-cloud/pubsub');
     const pubsub = new PubSub({ projectId: process.env.GOOGLE_CLOUD_PROJECT || 'votexa-ac15c' });
     
     try {

@@ -21,7 +21,7 @@ const flushEvents = async () => {
   batchTimeout = null;
 
   try {
-    const { BigQuery } = eval('require')('@google-cloud/bigquery');
+    const { BigQuery } = require('@google-cloud/bigquery');
     const bigquery = new BigQuery({ projectId: process.env.GOOGLE_CLOUD_PROJECT || 'votexa-ac15c' });
     
     await bigquery

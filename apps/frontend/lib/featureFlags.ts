@@ -30,7 +30,7 @@ const DEFAULT_FLAGS: FeatureFlags = {
 const fetchFlagsFromFirebaseAdmin = async (): Promise<FeatureFlags> => {
   if (isNode) {
     try {
-      const admin = eval('require')('firebase-admin');
+      const admin = require('firebase-admin');
       const remoteConfig = admin.remoteConfig();
       const template = await remoteConfig.getTemplate();
 

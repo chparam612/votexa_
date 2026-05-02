@@ -11,7 +11,7 @@ export class PushService {
   public static async send(message: PushMessage): Promise<boolean> {
     if (!isNode) return false;
     try {
-      const admin = eval('require')('firebase-admin');
+      const admin = require('firebase-admin');
       const db = admin.firestore();
       
       const userDoc = await db.collection('users').doc(message.userId).get();
@@ -39,7 +39,7 @@ export class PushService {
   public static async sendBatch(messages: PushMessage[]): Promise<boolean> {
     if (!isNode || messages.length === 0) return false;
     try {
-      const admin = eval('require')('firebase-admin');
+      const admin = require('firebase-admin');
       const db = admin.firestore();
       
       const userIds = messages.map(m => m.userId);

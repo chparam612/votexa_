@@ -54,7 +54,7 @@ router.post('/simulate', simulateRisk); // auth optional or admin for simulation
 router.get('/polling-stations', authMiddleware, getPollingStations);
 
 // Notifications & Webhooks
-router.post('/notifications/deliver', deliverNotification); // Usually authenticated via Cloud Tasks OIDC
+router.post('/notifications/deliver', authMiddleware, deliverNotification); // Authenticated via Firebase auth token
 router.post('/notifications/register-token', authMiddleware, registerToken);
 router.post('/webhooks/fsm-transition', verifyPubSubSignature, fsmWebhook); // PubSub webhook
 router.post('/webhooks/risk-alert', verifyPubSubSignature, riskAlertWebhook); // PubSub webhook

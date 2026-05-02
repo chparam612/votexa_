@@ -11,7 +11,7 @@ const getRedisClient = async () => {
   const redisUrl = await getSecret('REDIS_URL');
   if (!redisUrl) return null;
 
-  const { createClient } = eval('require')('redis');
+  const { createClient } = require('redis');
   redisClient = createClient({ url: redisUrl });
   redisClient.on('error', (err: any) => console.error('Redis Client Error', err));
   await redisClient.connect();

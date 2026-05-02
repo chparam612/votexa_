@@ -50,7 +50,10 @@ export default function FSMStepper({ currentState }: Props) {
                 {isCurrent && <View className="w-3 h-3 bg-white rounded-full" />}
               </View>
               {index < STATES_ORDER.length - 1 && (
-                <View className={`w-0.5 h-10 ${isCompleted ? 'bg-green-500' : 'bg-slate-200'}`} />
+                <View
+                  className={`w-0.5 h-10 ${isCompleted ? 'bg-green-500' : 'bg-slate-200'}`}
+                  importantForAccessibility="no"
+                />
               )}
             </View>
             <View className="flex-1 pt-1">
