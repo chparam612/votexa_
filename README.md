@@ -2,6 +2,12 @@
 
 **Chosen Vertical:** Civic Tech — Voter Assistance
 
+**Deployed Backend (Cloud Run):**
+- **System Health:** [api/health](https://votexa-backend-2zqx3ojr2a-el.a.run.app/api/health) (Public)
+- **Voter Dashboard:** [api/dashboard](https://votexa-backend-2zqx3ojr2a-el.a.run.app/api/dashboard) (Secured by Firebase Auth)
+- **Intelligence (Risk Engine):** [api/risk](https://votexa-backend-2zqx3ojr2a-el.a.run.app/api/risk) (Secured by Firebase Auth)
+- **API Documentation:** [Postman Collection](votexa_postman_collection.json) (Local file)
+
 **Problem Statement:**  
 Millions of voters miss elections due to lack of awareness about registration steps, deadlines, and polling locations. Votexa solves this by acting as a personalized, intelligent election assistant.
 
