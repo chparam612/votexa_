@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { auth } from '../config/firebase';
 
@@ -47,18 +47,30 @@ export default function ActionsScreen() {
 
       <View style={styles.content}>
         {actions.map((action) => (
-          <TouchableOpacity 
-            key={action.id} 
-            style={[styles.actionCard, completedSteps.includes(action.id) && styles.actionCardCompleted]}
-            onPress={() => !completedSteps.includes(action.id) && handleAction(action.event, action.id)}
+          <TouchableOpacity
+            key={action.id}
+            style={[
+              styles.actionCard,
+              completedSteps.includes(action.id) && styles.actionCardCompleted,
+            ]}
+            onPress={() =>
+              !completedSteps.includes(action.id) && handleAction(action.event, action.id)
+            }
             disabled={completedSteps.includes(action.id) || loading}
           >
             <View style={styles.actionHeader}>
-              <Text style={[styles.actionTitle, completedSteps.includes(action.id) && styles.actionTitleCompleted]}>
+              <Text
+                style={[
+                  styles.actionTitle,
+                  completedSteps.includes(action.id) && styles.actionTitleCompleted,
+                ]}
+              >
                 {action.title}
               </Text>
               {completedSteps.includes(action.id) && (
-                <View style={styles.checkBadge}><Text style={styles.checkText}>✓</Text></View>
+                <View style={styles.checkBadge}>
+                  <Text style={styles.checkText}>✓</Text>
+                </View>
               )}
             </View>
           </TouchableOpacity>
@@ -116,5 +128,5 @@ const styles = StyleSheet.create({
   checkText: {
     color: '#fff',
     fontWeight: 'bold',
-  }
+  },
 });

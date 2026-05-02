@@ -13,34 +13,43 @@ export const getRisk = async (req: Request, res: Response) => {
       const db = admin.firestore();
       const userDoc = await db.collection('users').doc(userId).get();
       const userData = userDoc.data();
-      
+
       if (!userData) throw new Error('User not found');
 
       const fsmState = userData.voterState || 'NOT_REGISTERED';
       const fsm = StateMachine.fromState(fsmState);
-      
+
       const riskInput = {
-        remainingSteps: 5 - (fsm.getProgress() / 20),
-        daysLeft: Math.max(1, Math.floor((new Date(userData.deadlines?.ELECTION_DAY || Date.now() + 864000000).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+        remainingSteps: 5 - fsm.getProgress() / 20,
+        daysLeft: Math.max(
+          1,
+          Math.floor(
+            (new Date(userData.deadlines?.ELECTION_DAY || Date.now() + 864000000).getTime() -
+              Date.now()) /
+              (1000 * 60 * 60 * 24),
+          ),
+        ),
       };
-      
+
       const risk = RiskEngine.calculate(riskInput, { high: 60, critical: 80 });
 
-      let recommendations = [];
+      const recommendations = [];
       if (risk.level === 'CRITICAL' || risk.level === 'HIGH') {
-        recommendations.push("You are at high risk of missing the election deadline. Complete the next step immediately.");
+        recommendations.push(
+          'You are at high risk of missing the election deadline. Complete the next step immediately.',
+        );
         if (riskInput.daysLeft < 7) {
-          recommendations.push("Less than a week left! Ensure your identity documents are ready.");
+          recommendations.push('Less than a week left! Ensure your identity documents are ready.');
         }
       } else {
-        recommendations.push("You are on track. Continue with your registration steps.");
+        recommendations.push('You are on track. Continue with your registration steps.');
       }
 
       return {
         score: risk.score,
         level: risk.level,
         breakdown: riskInput,
-        recommendations
+        recommendations,
       };
     });
 
@@ -54,8 +63,9 @@ export const getRisk = async (req: Request, res: Response) => {
 export const simulateRisk = async (req: Request, res: Response) => {
   try {
     const { scenarios } = req.body;
-    if (!scenarios || !Array.isArray(scenarios)) return res.status(400).json({ error: 'Invalid scenarios array' });
-    
+    if (!scenarios || !Array.isArray(scenarios))
+      return res.status(400).json({ error: 'Invalid scenarios array' });
+
     const results = RiskEngine.simulate(scenarios, { high: 60, critical: 80 });
     res.json({ results });
   } catch (error: any) {

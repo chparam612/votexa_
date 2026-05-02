@@ -4,9 +4,12 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node dist/apps/backend/src/index.js",
     "dev": "ts-node-dev --respawn --transpile-only ./src/index.ts",
     "test": "jest --detectOpenHandles"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   },
   "dependencies": {
     "@google-cloud/bigquery": "^7.3.0",

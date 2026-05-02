@@ -8,7 +8,7 @@ export const getSecret = async (name: string): Promise<string> => {
     try {
       // Using a dynamic string to prevent Metro from trying to bundle this
       const libName = '@google-cloud/secret-manager';
-      const { SecretManagerServiceClient } = require(libName);
+      const { SecretManagerServiceClient } = eval('require')(libName);
       const client = new SecretManagerServiceClient();
       const [version] = await client.accessSecretVersion({
         name: `projects/votexa-ac15c/secrets/${name}/versions/latest`,
@@ -18,7 +18,7 @@ export const getSecret = async (name: string): Promise<string> => {
         secretsCache[name] = payload;
         return payload;
       }
-    } catch (error) {
+    } catch {
       // Silent fail
     }
   }

@@ -1,23 +1,34 @@
-FROM node:20-alpine AS builder
-WORKDIR /app
+# Stage 1: Build
+FROM node:20-slim AS builder
+
+WORKDIR /usr/src/app
+
+# Copy package files
 COPY package*.json ./
-RUN npm ci
+
+# Install ALL dependencies including devDependencies (needed for tsc)
+RUN npm install --no-package-lock
+
+# Copy source code
 COPY . .
+
+# Build TypeScript to JavaScript
 RUN npm run build
 
-FROM node:20-alpine AS runner
-WORKDIR /app
-ENV NODE_ENV=production
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./
+# Stage 2: Production
+FROM node:20-slim AS production
 
-RUN addgroup -S votexa && adduser -S votexa -G votexa
-USER votexa
+WORKDIR /usr/src/app
 
+COPY package*.json ./
+
+# Install ONLY production dependencies
+RUN npm install --omit=dev --no-package-lock
+
+
+# Cloud Run uses PORT env variable
+ENV PORT=8080
 EXPOSE 8080
 
-HEALTHCHECK --interval=30s --timeout=3s \
-  CMD wget -qO- http://localhost:8080/api/health || exit 1
-
+# Start server
 CMD ["node", "dist/index.js"]

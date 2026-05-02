@@ -8,21 +8,42 @@ import rateLimit from 'express-rate-limit';
 import router from './routes';
 import { observabilityMiddleware } from './middleware/observability';
 
+process.on('uncaughtException', (err) => {
+  console.error('UNCAUGHT EXCEPTION:', err);
+  process.exit(1);
+});
+process.on('unhandledRejection', (reason) => {
+  console.error('UNHANDLED REJECTION:', reason);
+});
+
 dotenv.config({ path: path.resolve(process.cwd(), '../../.env') });
 
-const serviceAccountPath =
-  process.env.GOOGLE_APPLICATION_CREDENTIALS ||
-  path.resolve(process.cwd(), '../../service-account.json');
-
+// Firebase Admin initialization
+// - Cloud Run: Uses Application Default Credentials (ADC) automatically
+// - Local Dev: Uses service-account.json file
 if (admin.apps.length === 0) {
   try {
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccountPath),
-      projectId: 'votexa-ac15c',
-    });
-    console.log('✅ Firebase Admin initialized with Service Account');
+    const isCloudRun = !!process.env.K_SERVICE; // Cloud Run sets K_SERVICE automatically
+    const projectId = process.env.GOOGLE_CLOUD_PROJECT || 'votexa-ac15c';
+
+    if (isCloudRun) {
+      // On Cloud Run, use ADC - no service account file needed
+      admin.initializeApp({ projectId });
+      console.log('✅ Firebase Admin initialized with ADC (Cloud Run)');
+    } else {
+      // Local development - use service account file
+      const serviceAccountPath =
+        process.env.GOOGLE_APPLICATION_CREDENTIALS ||
+        path.resolve(process.cwd(), '../../service-account.json');
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccountPath),
+        projectId,
+      });
+      console.log('✅ Firebase Admin initialized with Service Account (Local)');
+    }
   } catch (error) {
-    console.error('❌ Failed to initialize Firebase Admin:', error);
+    // Non-fatal: log but don't crash the server
+    console.error('⚠️ Firebase Admin init warning:', (error as Error).message);
   }
 }
 
@@ -30,8 +51,8 @@ const app = express();
 const port = process.env.PORT || 8080;
 
 const transitionLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  max: 10, // limit each IP to 10 requests per windowMs
+  windowMs: 1 * 60 * 1000,
+  max: 10,
   message: { error: 'Too many transition requests, please try again later.' },
   standardHeaders: true,
   legacyHeaders: false,
@@ -49,9 +70,17 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-if (require.main === module) {
-  app.listen(port, () => {
+// Always start the server regardless of Firebase init status
+// Skip in test environment to avoid open handles
+if (process.env.NODE_ENV !== 'test') {
+  const server = app.listen(port, () => {
     console.log(`🚀 Votexa Backend running on port ${port}`);
+  });
+
+  // Graceful shutdown for Cloud Run
+  process.on('SIGTERM', () => {
+    console.log('SIGTERM received, shutting down gracefully');
+    server.close(() => process.exit(0));
   });
 }
 

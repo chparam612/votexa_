@@ -15,8 +15,8 @@ function getRiskLevel(score: number): RiskLevel {
 
 export default function DashboardScreen() {
   const router = useRouter();
-  const [fsmState, setFsmState] = useState('NOT_REGISTERED');
-  const [riskScore, setRiskScore] = useState(75);
+  const [fsmState] = useState('NOT_REGISTERED');
+  const [riskScore] = useState(75);
 
   useEffect(() => {
     // Check auth
@@ -68,11 +68,13 @@ export default function DashboardScreen() {
           </TouchableOpacity>
         </View>
       </View>
-      
-      <TouchableOpacity style={styles.logoutButton} onPress={() => {
-        auth().signOut();
-        router.replace('/');
-      }}>
+      <TouchableOpacity
+        style={styles.logoutButton}
+        onPress={() => {
+          auth().signOut();
+          router.replace('/');
+        }}
+      >
         <Text style={styles.logoutText}>Logout</Text>
       </TouchableOpacity>
     </ScrollView>
@@ -173,5 +175,5 @@ const styles = StyleSheet.create({
   logoutText: {
     color: '#EF4444',
     fontWeight: 'bold',
-  }
+  },
 });

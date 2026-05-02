@@ -4,23 +4,23 @@ import { log, recordMetric } from '../../../../apps/frontend/lib';
 
 export const observabilityMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
-  
+
   res.on('finish', () => {
     const duration = Date.now() - start;
-    
+
     // Log API call
     log('INFO', `${req.method} ${req.originalUrl} ${res.statusCode} - ${duration}ms`, {
       method: req.method,
       url: req.originalUrl,
       status: res.statusCode,
       durationMs: duration,
-      userId: (req as any).user?.uid || 'anonymous'
+      userId: (req as any).user?.uid || 'anonymous',
     });
 
     // Record latency metric
     recordMetric('api_latency', duration, {
       method: req.method,
-      endpoint: req.route?.path || req.originalUrl
+      endpoint: req.route?.path || req.originalUrl,
     });
   });
 
@@ -38,7 +38,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     const decodedToken = await admin.auth().verifyIdToken(token);
     (req as any).user = decodedToken;
     next();
-  } catch (error) {
+  } catch {
     res.status(401).json({ error: 'Unauthorized: Token verification failed' });
   }
 };
