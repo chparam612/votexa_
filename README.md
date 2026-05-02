@@ -1,3 +1,34 @@
+## Submission Details
+
+**Chosen Vertical:** Civic Tech — Voter Assistance
+
+**Problem Statement:**  
+Millions of voters miss elections due to lack of awareness about registration steps, deadlines, and polling locations. Votexa solves this by acting as a personalized, intelligent election assistant.
+
+**Approach & Logic:**  
+- Finite State Machine (FSM) tracks each voter's journey across 7 states: NOT_REGISTERED → REGISTERED → VERIFIED → READY → VOTED
+- RiskEngine calculates a deadline risk score based on remaining steps and days left
+- DecisionEngine recommends the next best action for each user
+- Google Cloud services handle all backend intelligence, caching, analytics and notifications
+
+**How It Works:**  
+1. User registers/logs in via Firebase Auth
+2. App fetches voter state from Firestore via Cloud Run backend
+3. FSM determines available next actions
+4. Risk score is calculated and displayed
+5. User completes steps — each transition is recorded, published to Pub/Sub, and tracked in BigQuery
+6. Notifications are scheduled via Cloud Tasks
+
+**Google Services Used:**  
+Firebase Auth, Firestore, Cloud Run, Pub/Sub, BigQuery, Vertex AI, Google Maps, Cloud Tasks, Cloud Memorystore (Redis)
+
+**Assumptions:**  
+- Users are Indian voters (election workflow based on ECI process)
+- Backend is deployed on Cloud Run with ADC credentials
+- Push notifications require FCM setup post-submission
+
+---
+
 # Votexa: Smart Election Assistant
 
 Production-grade Smart Election Assistant mobile application. Built with React Native, Expo Router, NativeWind, and an Express monorepo backed by 15 Google Cloud & Firebase services.
@@ -75,11 +106,11 @@ Production-grade Smart Election Assistant mobile application. Built with React N
 | Memorystore (Redis) | 1GB instance (Basic) | ~$35.00 |
 | Pub/Sub | 500k messages | ~$0.00 (Free Tier) |
 | Cloud Tasks | 1M Operations | ~$0.40 |
-| Google Maps API | 100K Distance Matrix | ~$500.00 |
+| Google Maps API | 10K Distance Matrix calls | ~$50.00 |
 | Vertex AI (Gemini) | 50M tokens | ~$50.00 |
 | BigQuery | 5GB Storage, 10GB Query | ~$0.00 (Free Tier) |
 | Firebase Auth | 100K active users | Free |
-| **TOTAL** | | **~$592.40** |
+| **TOTAL** | | **~$142.40** |
 
 ## Setup Instructions
 
