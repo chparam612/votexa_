@@ -1,10 +1,11 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import * as admin from 'firebase-admin';
 import { PollingOptimizer } from '../../../../apps/frontend/services/optimization/PollingOptimizer';
+import { AuthenticatedRequest } from '../types';
 
-export const getPollingStations = async (req: Request, res: Response) => {
+export const getPollingStations = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const userId = (req as any).user?.uid;
+    const userId = req.user?.uid;
     if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
     const db = admin.firestore();

@@ -2,10 +2,11 @@ import { Request, Response } from 'express';
 import * as admin from 'firebase-admin';
 import { invalidateUserCache, publishEvent } from '../../../../apps/frontend/lib';
 import { StateMachine, VoterEvent, VoterState } from '../../../../packages/algorithms/src/StateMachine';
+import { AuthenticatedRequest } from '../types';
 
-export const transitionState = async (req: Request, res: Response) => {
+export const transitionState = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const userId = (req as any).user?.uid;
+    const userId = req.user?.uid;
     const { event } = req.body;
     
     if (!userId || !event) return res.status(400).json({ error: 'Missing userId or event' });

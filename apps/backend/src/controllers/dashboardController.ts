@@ -1,14 +1,15 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import * as admin from 'firebase-admin';
 import { getCached } from '../../../../apps/frontend/lib';
 import { StateMachine } from '../../../../packages/algorithms/src/StateMachine';
 import { RiskEngine } from '../../../../packages/algorithms/src/RiskEngine';
 import { HybridRecommendationEngine } from '../../../../apps/frontend/services/intelligence/HybridRecommendationEngine';
 import { PollingOptimizer } from '../../../../apps/frontend/services/optimization/PollingOptimizer';
+import { AuthenticatedRequest } from '../types';
 
-export const getDashboard = async (req: Request, res: Response) => {
+export const getDashboard = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const userId = (req as any).user?.uid;
+    const userId = req.user?.uid;
     if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
     const dashboardData = await getCached(`dashboard:${userId}`, 60, async () => {

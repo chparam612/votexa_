@@ -13,7 +13,7 @@ export class TaskQueueService {
   public static async scheduleNotification(n: NotificationPayload): Promise<boolean> {
     if (!isNode) return false;
     try {
-      const { CloudTasksClient } = eval('require')('@google-cloud/tasks');
+      const { CloudTasksClient } = require('@google-cloud/tasks');
       const client = new CloudTasksClient();
       
       const project = process.env.GOOGLE_CLOUD_PROJECT || 'votexa-ac15c';
@@ -47,7 +47,7 @@ export class TaskQueueService {
   public static async cancelNotification(id: string): Promise<boolean> {
     if (!isNode) return false;
     try {
-      const { CloudTasksClient } = eval('require')('@google-cloud/tasks');
+      const { CloudTasksClient } = require('@google-cloud/tasks');
       const client = new CloudTasksClient();
       
       const project = process.env.GOOGLE_CLOUD_PROJECT || 'votexa-ac15c';

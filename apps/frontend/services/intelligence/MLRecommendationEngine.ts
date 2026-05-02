@@ -23,7 +23,7 @@ export class MLRecommendationEngine {
   public static async predictNextActions(features: VoterFeatures): Promise<MLPrediction | null> {
     if (!isNode) return null;
     try {
-      const { VertexAI } = eval('require')('@google-cloud/vertexai');
+      const { VertexAI } = require('@google-cloud/vertexai');
       const project = process.env.GOOGLE_CLOUD_PROJECT || 'votexa-ac15c';
       const location = 'asia-south1';
 

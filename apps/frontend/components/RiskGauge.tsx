@@ -46,7 +46,8 @@ export default function RiskGauge({ score, level }: Props) {
     <View
       className="bg-white p-6 rounded-2xl shadow-sm items-center"
       accessibilityLabel={`Current dropoff risk: ${score} percent. Level: ${level}`}
-      accessibilityRole="none"
+      accessibilityRole="progressbar"
+      accessibilityValue={{ min: 0, max: 100, now: score }}
       accessibilityLiveRegion="polite"
     >
       <Text

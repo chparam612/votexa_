@@ -11,8 +11,8 @@ export const log = async (
 
   if (isNode) {
     try {
-      const { Logging } = eval('require')('@google-cloud/logging');
-      const path = eval('require')('path');
+      const { Logging } = require('@google-cloud/logging');
+      const path = require('path');
 
       const keyPath =
         process.env.GOOGLE_APPLICATION_CREDENTIALS ||
@@ -46,9 +46,4 @@ export * from './featureFlags';
 export * from './secrets';
 export * from './metrics';
 export * from './risk';
-export * from './cache';
-export * from './analytics';
-export * from './featureFlags';
 export * from './logger';
-export * from './secrets';
-export * from './eventBus';

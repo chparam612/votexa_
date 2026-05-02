@@ -58,12 +58,21 @@ const transitionLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+const notificationLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 20,
+  message: { error: 'Too many notification requests, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(observabilityMiddleware);
 
 app.use('/api/actions/transition', transitionLimiter);
+app.use('/api/notifications/deliver', notificationLimiter);
 app.use('/api', router);
 
 app.get('/api/health', (req, res) => {

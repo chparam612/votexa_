@@ -6,9 +6,7 @@ export const getSecret = async (name: string): Promise<string> => {
   // Only attempt node-specific logic if we are actually in a Node environment
   if (typeof process !== 'undefined' && process.versions && process.versions.node) {
     try {
-      // Using a dynamic string to prevent Metro from trying to bundle this
-      const libName = '@google-cloud/secret-manager';
-      const { SecretManagerServiceClient } = eval('require')(libName);
+      const { SecretManagerServiceClient } = require('@google-cloud/secret-manager');
       const client = new SecretManagerServiceClient();
       const [version] = await client.accessSecretVersion({
         name: `projects/votexa-ac15c/secrets/${name}/versions/latest`,

@@ -5,7 +5,7 @@ export type LogLevel = 'DEBUG' | 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL';
 export const log = (level: LogLevel, message: string, metadata: Record<string, any> = {}) => {
   if (isNode) {
     try {
-      const { Logging } = eval('require')('@google-cloud/logging');
+      const { Logging } = require('@google-cloud/logging');
       const logging = new Logging({ projectId: process.env.GOOGLE_CLOUD_PROJECT || 'votexa-ac15c' });
       const log = logging.log('votexa-app-log');
       

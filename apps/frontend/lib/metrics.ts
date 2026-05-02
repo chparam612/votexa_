@@ -8,9 +8,9 @@ export const recordMetric = async (
 ) => {
   if (isNode) {
     try {
-      const { MetricServiceClient } = eval('require')('@google-cloud/monitoring');
-      const path = eval('require')('path');
-      const fs = eval('require')('fs');
+      const { MetricServiceClient } = require('@google-cloud/monitoring');
+      const path = require('path');
+      const fs = require('fs');
 
       const isCloudRun = !!process.env.K_SERVICE;
       const options: any = {};
