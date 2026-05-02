@@ -18,9 +18,9 @@ export default function ActionsScreen() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ userId: auth.currentUser?.uid, event })
+        body: JSON.stringify({ userId: auth.currentUser?.uid, event }),
       });
       await refetch();
     } catch (e) {
@@ -49,7 +49,7 @@ export default function ActionsScreen() {
         ) : (
           <View className="space-y-4">
             {data?.actions && data.actions.length > 0 ? (
-              data.actions.map(action => (
+              data.actions.map((action) => (
                 <ActionCard
                   key={action.id}
                   title={action.title}
@@ -61,9 +61,12 @@ export default function ActionsScreen() {
             ) : (
               <View className="bg-white p-6 rounded-2xl border border-slate-200 items-center mt-10">
                 <Text className="text-4xl mb-4">🎉</Text>
-                <Text className="text-xl font-bold text-slate-800 text-center">You're all caught up!</Text>
+                <Text className="text-xl font-bold text-slate-800 text-center">
+                  You&apos;re all caught up!
+                </Text>
                 <Text className="text-slate-500 text-center mt-2">
-                  No pending actions for your current state. Check back later or review your polling station details.
+                  No pending actions for your current state. Check back later or review your polling
+                  station details.
                 </Text>
               </View>
             )}

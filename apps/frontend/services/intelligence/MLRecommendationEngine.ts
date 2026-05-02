@@ -1,7 +1,8 @@
-import { ActionRecommendation, DecisionEngine } from '../../../../packages/algorithms/src/DecisionEngine';
+import { ActionRecommendation } from '../../../../packages/algorithms/src/DecisionEngine';
 import { VoterState } from '../../../../packages/algorithms/src/StateMachine';
 
-const isNode = typeof process !== 'undefined' && process.versions != null && process.versions.node != null;
+const isNode =
+  typeof process !== 'undefined' && process.versions != null && process.versions.node != null;
 
 export interface VoterFeatures {
   voterState: VoterState;
@@ -25,7 +26,7 @@ export class MLRecommendationEngine {
       const { VertexAI } = eval('require')('@google-cloud/vertexai');
       const project = process.env.GOOGLE_CLOUD_PROJECT || 'votexa-ac15c';
       const location = 'asia-south1';
-      
+
       const vertex_ai = new VertexAI({ project, location });
       const generativeModel = vertex_ai.preview.getGenerativeModel({
         model: 'gemini-1.5-pro-preview-0409',
@@ -49,10 +50,13 @@ export class MLRecommendationEngine {
       const request = { contents: [{ role: 'user', parts: [{ text: prompt }] }] };
       const result = await generativeModel.generateContent(request);
       const responseText = result.response.candidates?.[0]?.content?.parts?.[0]?.text;
-      
+
       if (responseText) {
         // Strip markdown code block ticks if any
-        const cleanedText = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
+        const cleanedText = responseText
+          .replace(/```json/g, '')
+          .replace(/```/g, '')
+          .trim();
         const parsed = JSON.parse(cleanedText) as MLPrediction;
         return parsed;
       }

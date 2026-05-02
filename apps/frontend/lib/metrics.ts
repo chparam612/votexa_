@@ -1,18 +1,25 @@
-const isNode = typeof process !== 'undefined' && process.versions != null && process.versions.node != null;
+const isNode =
+  typeof process !== 'undefined' && process.versions != null && process.versions.node != null;
 
-export const recordMetric = async (metricType: string, value: number, labels: Record<string, string> = {}) => {
+export const recordMetric = async (
+  metricType: string,
+  value: number,
+  labels: Record<string, string> = {},
+) => {
   if (isNode) {
     try {
       const { MetricServiceClient } = eval('require')('@google-cloud/monitoring');
       const path = eval('require')('path');
-      
+
       // Use project root path by default
-      const keyPath = process.env.GOOGLE_APPLICATION_CREDENTIALS || path.resolve(process.cwd(), '../../service-account.json');
-      
+      const keyPath =
+        process.env.GOOGLE_APPLICATION_CREDENTIALS ||
+        path.resolve(process.cwd(), '../../service-account.json');
+
       const client = new MetricServiceClient({
         keyFilename: keyPath,
       });
-      
+
       const projectId = process.env.GOOGLE_CLOUD_PROJECT || 'votexa-ac15c';
 
       const dataPoint = {
@@ -42,7 +49,7 @@ export const recordMetric = async (metricType: string, value: number, labels: Re
         name: client.projectPath(projectId),
         timeSeries: [timeSeriesData],
       });
-    } catch (error) {
+    } catch {
       // Silent fail to prevent blocking execution
     }
   }

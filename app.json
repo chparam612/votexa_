@@ -1,0 +1,20 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "b0679fa5-447a-4dcc-a40b-9d54c201c2d3"
+      }
+    },
+    "owner": "param-organization",
+    "slug": "votexa",
+    "android": {
+      "package": "com.paramorganization.votexa"
+    },
+    "ios": {
+      "bundleIdentifier": "com.paramorganization.votexa",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    }
+  }
+}
