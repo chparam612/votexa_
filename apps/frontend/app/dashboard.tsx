@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import FSMStepper from '../components/FSMStepper';
 import RiskGauge from '../components/RiskGauge';
 import { auth } from '../config/firebase';
-import type { RiskLevel } from '../../../packages/algorithms/src/RiskEngine';
+import type { RiskLevel } from '@votexa/algorithms';
 
 function getRiskLevel(score: number): RiskLevel {
   if (score >= 80) return 'CRITICAL';

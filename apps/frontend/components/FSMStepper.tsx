@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { STATE_META, VoterState } from '../../../packages/algorithms/src/StateMachine';
+import { STATE_META, VoterState } from '@votexa/algorithms';
 
 interface Props {
   currentState: string;
