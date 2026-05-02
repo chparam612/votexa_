@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "419650757228",
+    "firebase_url": "https://votexa-ac15c-default-rtdb.firebaseio.com",
+    "project_id": "votexa-ac15c",
+    "storage_bucket": "votexa-ac15c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:419650757228:android:4018a51179f18373482e49",
+        "android_client_info": {
+          "package_name": "com.votexa.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIY4n3GuSM-07IOQzKJ004xJohEg6kN_w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

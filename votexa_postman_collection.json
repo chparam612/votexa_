@@ -1,0 +1,303 @@
+{
+	"info": {
+		"_postman_id": "b3e3e3e3-e3e3-4e3e-8e3e-e3e3e3e3e3e3",
+		"name": "Votexa API",
+		"description": "Postman collection for testing the Votexa Smart Election Assistant Backend.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/health",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Dashboard",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{idToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/dashboard",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"dashboard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transition FSM State",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{idToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"event\": \"SUBMIT_FORM\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/actions/transition",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"actions",
+						"transition"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Risk Analysis",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{idToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/risk",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"risk"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Simulate Risk",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"scenarios\": [\n        {\n            \"remainingSteps\": 4,\n            \"daysLeft\": 10\n        },\n        {\n            \"remainingSteps\": 1,\n            \"daysLeft\": 2\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/simulate",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"simulate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Polling Stations",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{idToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/polling-stations",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"polling-stations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register FCM Token",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{idToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"fcmToken\": \"mock-fcm-token-12345\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/notifications/register-token",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"notifications",
+						"register-token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deliver Notification (Task Handler)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\": \"mock-user-1\",\n    \"title\": \"Election Alert\",\n    \"body\": \"Your registration deadline is approaching!\",\n    \"channels\": [\"push\"]\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/notifications/deliver",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"notifications",
+						"deliver"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FSM Transition Webhook",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"message\": {\n        \"data\": \"eyJ1c2VySWQiOiJtb2NrLXVzZXItMSIsImZyb20iOiJOT1RfUkVHSVNURVJFRCIsInRvIjoiUkVHSVNURVJFRCIsImV2ZW50IjoiU1VCTUlUX0ZPUk0ifQ==\"\n    }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/webhooks/fsm-transition",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"webhooks",
+						"fsm-transition"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "idToken",
+			"value": "PASTE_FIREBASE_ID_TOKEN_HERE",
+			"type": "string"
+		}
+	]
+}
